@@ -1,0 +1,96 @@
+#include <iostream>
+#include <vector>
+#include <string>
+using namespace std;
+
+void read_input(vector<string> &ar, vector<int> &inp, int &n, int &m)
+{
+    cin >> n >> m;
+    for (int i = 0; i < n; ++i)
+    {
+        string a;
+        cin >> a;
+        ar.push_back(a);
+    }
+
+    for (int i = 0; i < n; i++)
+    {
+        int b;
+        cin >> b;
+        inp.push_back(b);
+    }
+}
+bool process(vector<string> &ar, vector<int> &inp, int n, int m, bool &check)
+{
+    check = true;
+    for (int i = 0; i < ar.size() - 1; i++)
+    {
+        if (ar[i].size() != ar[i + 1].size())
+        {
+            check = false;
+            cout << "Invalid Network\n";
+            break;
+        }
+       
+    }
+    bool err = false;
+    for (int j = 0; j < m; j++)
+        for (int i = 0; i < n - 1; i++)
+            if (ar[i][j] != '-')
+            {
+                if (ar[i][j] < 'a' || ar[i][j] > 'z')
+                {
+                    cout << "Invalid Network\n";
+                    err = true;
+                }
+                if (!err)
+                    for (int k = i + 1; k < n; k++)
+                    {
+                        int cnt = 1;
+                        if (ar[i][j] == ar[k][j])
+                        {
+                            cnt++;
+                            if (inp[i] > inp[k])
+                            {
+                                char temp = inp[i];
+                                inp[i] = inp[k];
+                                inp[k] = temp;
+                            }
+                        }
+                        if (cnt != 2 && i==n-1)
+                        {
+                            cout << "Invalid Network\n";
+                            err = true;
+                        }
+                    }
+            }
+
+    return err;
+}
+void generate_output(vector<string> ar, vector<int> inp, int n, bool err, bool check)
+{
+    bool flag = false;
+    if (!err && check)
+    {
+        for (int i = 0; i < n - 1; i++)
+            if (inp[i] > inp[i + 1])
+            {
+                cout << "Not sorted\n";
+                flag = true;
+            }
+        if (!flag)
+            cout << "Sorted\n";
+    }
+}
+
+int main()
+{
+    bool err, check=true;
+    int n, m;
+    vector<string> ar;
+    vector<int> inp;
+    read_input(ar, inp, n, m);
+    err = process(ar, inp, n, m, check);
+    generate_output(ar, inp, n, err,check);
+    
+}
